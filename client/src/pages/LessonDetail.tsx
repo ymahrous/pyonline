@@ -83,14 +83,9 @@ export default function LessonDetail() {
 
   const handleCompleteLesson = () => {
     if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please log in to track your progress.",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
+      // For non-authenticated users, just mark as complete locally and show modal
+      setProgress(100);
+      setShowCompletionModal(true);
       return;
     }
     completeLessonMutation.mutate();
