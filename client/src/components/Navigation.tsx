@@ -76,13 +76,8 @@ export default function Navigation() {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage
-                              src={user.profileImageUrl || undefined}
-                              alt={user.firstName || "User"}
-                              className="object-cover"
-                            />
                             <AvatarFallback>
-                              {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
+                              {user.firstName?.charAt(0) || user.username?.charAt(0) || "U"}
                             </AvatarFallback>
                           </Avatar>
                         </Button>
@@ -93,7 +88,7 @@ export default function Navigation() {
                             <p className="text-sm font-medium leading-none">
                               {user.firstName && user.lastName
                                 ? `${user.firstName} ${user.lastName}`
-                                : user.email}
+                                : user.username}
                             </p>
                             <p className="text-xs leading-none text-muted-foreground">
                               {user.email}
@@ -110,19 +105,21 @@ export default function Navigation() {
                   </div>
                 ) : (
                   <div className="flex items-center space-x-4">
-                    <Button
-                      variant="ghost"
-                      onClick={() => (window.location.href = "/api/login")}
-                      className="text-slate-600 hover:text-blue-600"
-                    >
-                      Login
-                    </Button>
-                    <Button
-                      onClick={() => (window.location.href = "/api/login")}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Sign Up
-                    </Button>
+                    <Link href="/auth">
+                      <Button
+                        variant="ghost"
+                        className="text-slate-600 hover:text-blue-600"
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/auth">
+                      <Button
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        Sign Up
+                      </Button>
+                    </Link>
                   </div>
                 )}
               </>
@@ -183,19 +180,23 @@ export default function Navigation() {
                   </>
                 ) : (
                   <>
-                    <Button
-                      variant="ghost"
-                      onClick={() => (window.location.href = "/api/login")}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50 w-full text-left transition-colors"
-                    >
-                      Login
-                    </Button>
-                    <Button
-                      onClick={() => (window.location.href = "/api/login")}
-                      className="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700 w-full text-left transition-colors"
-                    >
-                      Sign Up
-                    </Button>
+                    <Link href="/auth">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50 w-full text-left transition-colors"
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/auth">
+                      <Button
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700 w-full text-left transition-colors"
+                      >
+                        Sign Up
+                      </Button>
+                    </Link>
                   </>
                 )}
               </div>

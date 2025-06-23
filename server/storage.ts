@@ -2,7 +2,7 @@ import {
   users,
   lessonProgress,
   type User,
-  type UpsertUser,
+  type InsertUser,
   type LessonProgress,
   type InsertLessonProgress,
 } from "@shared/schema";
@@ -12,42 +12,38 @@ import { eq, and } from "drizzle-orm";
 // Interface for storage operations
 export interface IStorage {
   // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-  getUser(id: string): Promise<User | undefined>;
-  upsertUser(user: UpsertUser): Promise<User>;
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
   
   // Lesson progress operations
-  getLessonProgress(userId: string): Promise<LessonProgress[]>;
+  getLessonProgress(userId: number): Promise<LessonProgress[]>;
   upsertLessonProgress(progress: InsertLessonProgress): Promise<LessonProgress>;
-  getUserLessonProgress(userId: string, lessonId: number): Promise<LessonProgress | undefined>;
+  getUserLessonProgress(userId: number, lessonId: number): Promise<LessonProgress | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
   // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
-          updatedAt: new Date(),
-        },
-      })
       .returning();
     return user;
   }
 
   // Lesson progress operations
-  async getLessonProgress(userId: string): Promise<LessonProgress[]> {
+  async getLessonProgress(userId: number): Promise<LessonProgress[]> {
     return await db
       .select()
       .from(lessonProgress)
@@ -69,7 +65,7 @@ export class DatabaseStorage implements IStorage {
       const [updatedProgress] = await db
         .update(lessonProgress)
         .set({
-          ...progress,
+          completed: progress.completed,
           completedAt: progress.completed ? new Date() : null,
         })
         .where(eq(lessonProgress.id, existingProgress.id))
@@ -79,7 +75,9 @@ export class DatabaseStorage implements IStorage {
       const [newProgress] = await db
         .insert(lessonProgress)
         .values({
-          ...progress,
+          userId: progress.userId,
+          lessonId: progress.lessonId,
+          completed: progress.completed || false,
           completedAt: progress.completed ? new Date() : null,
         })
         .returning();
@@ -87,7 +85,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getUserLessonProgress(userId: string, lessonId: number): Promise<LessonProgress | undefined> {
+  async getUserLessonProgress(userId: number, lessonId: number): Promise<LessonProgress | undefined> {
     const [progress] = await db
       .select()
       .from(lessonProgress)

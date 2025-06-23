@@ -11,6 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import Projects from "@/pages/Projects";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import AuthPage from "@/pages/AuthPage";
 import NotFound from "@/pages/not-found";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/projects" component={Projects} />
             <Route path="/about" component={About} />
             <Route path="/contact" component={Contact} />
+            <Route path="/auth" component={AuthPage} />
             <Route component={NotFound} />
           </Switch>
         </div>
