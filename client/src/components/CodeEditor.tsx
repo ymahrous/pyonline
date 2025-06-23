@@ -14,33 +14,95 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
   const [showOutput, setShowOutput] = useState(false);
 
   const runCode = () => {
-    // Simple simulation of Python print statements
+    // Enhanced Python code simulation
     try {
       const lines = code.split('\n');
       let result = '';
+      let variables: { [key: string]: any } = {};
       
       lines.forEach(line => {
-        if (line.trim().startsWith('print(')) {
-          const match = line.match(/print\((.*)\)/);
-          if (match) {
-            let content = match[1];
-            // Simple string evaluation (very basic)
-            if (content.startsWith('"') && content.endsWith('"')) {
-              result += content.slice(1, -1) + '\n';
-            } else if (content.startsWith("'") && content.endsWith("'")) {
-              result += content.slice(1, -1) + '\n';
+        const trimmedLine = line.trim();
+        
+        // Skip empty lines and comments
+        if (!trimmedLine || trimmedLine.startsWith('#')) {
+          return;
+        }
+        
+        // Handle variable assignments
+        if (trimmedLine.includes('=') && !trimmedLine.includes('==') && !trimmedLine.includes('!=') && !trimmedLine.includes('<=') && !trimmedLine.includes('>=')) {
+          const [varName, varValue] = trimmedLine.split('=').map(s => s.trim());
+          if (varValue) {
+            // Simple evaluation of strings and numbers
+            if ((varValue.startsWith('"') && varValue.endsWith('"')) || 
+                (varValue.startsWith("'") && varValue.endsWith("'"))) {
+              variables[varName] = varValue.slice(1, -1);
+            } else if (!isNaN(Number(varValue))) {
+              variables[varName] = Number(varValue);
             } else {
-              result += '> ' + content + '\n';
+              variables[varName] = varValue;
             }
+          }
+          return;
+        }
+        
+        // Handle print statements
+        if (trimmedLine.startsWith('print(')) {
+          const match = trimmedLine.match(/print\((.*)\)/);
+          if (match) {
+            let content = match[1].trim();
+            
+            // Handle string literals
+            if ((content.startsWith('"') && content.endsWith('"')) || 
+                (content.startsWith("'") && content.endsWith("'"))) {
+              result += content.slice(1, -1) + '\n';
+            }
+            // Handle variables
+            else if (variables.hasOwnProperty(content)) {
+              result += variables[content] + '\n';
+            }
+            // Handle simple expressions like f-strings (basic)
+            else if (content.startsWith('f"') || content.startsWith("f'")) {
+              let fstring = content.slice(2, -1);
+              // Replace variables in f-string
+              Object.keys(variables).forEach(varName => {
+                const regex = new RegExp(`\\{${varName}\\}`, 'g');
+                fstring = fstring.replace(regex, variables[varName]);
+              });
+              result += fstring + '\n';
+            }
+            // Handle numbers and simple expressions
+            else if (!isNaN(Number(content))) {
+              result += content + '\n';
+            }
+            // Handle simple math operations
+            else if (/^[\d\s+\-*/()]+$/.test(content)) {
+              try {
+                // Basic math evaluation (safe for simple expressions)
+                const mathResult = Function('"use strict"; return (' + content + ')')();
+                result += mathResult + '\n';
+              } catch {
+                result += content + '\n';
+              }
+            }
+            else {
+              result += content + '\n';
+            }
+          }
+        }
+        // Handle other simple statements
+        else {
+          // For now, just acknowledge the line was processed
+          if (trimmedLine.length > 0) {
+            result += '# Executed: ' + trimmedLine + '\n';
           }
         }
       });
 
       if (!result) {
-        result = 'Code executed successfully (no output)';
+        result = 'Code executed successfully (no output)\n';
       }
 
-      setOutput(result);
+      setOutput(result.trim());
       setShowOutput(true);
       onCodeRun?.(code);
     } catch (error) {
