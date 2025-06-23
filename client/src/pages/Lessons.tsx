@@ -7,11 +7,11 @@ import { CheckCircle } from "lucide-react";
 import { lessons } from "@/data/lessons";
 import { useAuth } from "@/hooks/useAuth";
 import type { LessonProgress } from "@shared/schema";
-import { useLocalStorage } from "@/hooks/useLocalStorage"; // Assuming you have or will create this hook
+import { useLocalProgress } from "@/hooks/useLocalProgress";
 
 export default function Lessons() {
   const { isAuthenticated } = useAuth();
-  const [completedLessonIds, setCompletedLessonIds] = useLocalStorage("completedLessons", []);
+  const { isLessonCompleted, getCompletedLessons } = useLocalProgress();
 
   const { data: progressData } = useQuery<LessonProgress[]>({
     queryKey: ["/api/progress"],
@@ -22,18 +22,14 @@ export default function Lessons() {
     progressData?.filter(p => p.completed).map(p => p.lessonId) || []
   );
 
-  const isLessonCompleted = (lessonId: string) => {
-    return completedLessonIds.includes(lessonId);
-  };
-
-  const getCompletedLessons = () => {
-    return lessons.filter(lesson => completedLessonIds.includes(lesson.id));
+  const getLocalCompletedLessons = () => {
+    return lessons.filter(lesson => isLessonCompleted(parseInt(lesson.id)));
   };
 
   const totalLessons = lessons.length;
   const completedCount = isAuthenticated 
     ? completedLessons.size 
-    : getCompletedLessons().length;
+    : getLocalCompletedLessons().length;
   const progressPercentage = Math.round((completedCount / totalLessons) * 100);
 
   return (
@@ -54,7 +50,7 @@ export default function Lessons() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson) => {
-            const isCompleted = isAuthenticated ? completedLessons.has(lesson.id) : isLessonCompleted(lesson.id);
+            const isCompleted = isAuthenticated ? completedLessons.has(lesson.id) : isLessonCompleted(parseInt(lesson.id));
             return (
               <Card key={lesson.id} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-center mb-4">
