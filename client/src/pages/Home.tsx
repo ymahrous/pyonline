@@ -72,22 +72,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Meme Section */}
+      {/* Learning Section */}
       <section className="py-16 bg-slate-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8">Learning Python Like...</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <img 
-              src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
-              alt="Developer coding Python" 
-              className="rounded-xl shadow-lg w-full h-64 object-cover" 
-            />
-            <img 
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
-              alt="Happy developer" 
-              className="rounded-xl shadow-lg w-full h-64 object-cover" 
-            />
-          </div>
+          <h2 className="text-3xl font-bold text-slate-800 mb-8">Ready to Start Your Python Journey?</h2>
           <p className="text-lg text-slate-600 mt-6">Join thousands of learners who are having fun while mastering Python!</p>
         </div>
       </section>
