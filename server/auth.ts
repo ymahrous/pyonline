@@ -33,7 +33,8 @@ export function setupAuth(app: Express) {
   const PostgresSessionStore = connectPg(session);
   const sessionStore = new PostgresSessionStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
+    createTableIfMissing: false,
+    tableName: "sessions",
   });
 
   const sessionSettings: session.SessionOptions = {
@@ -82,6 +83,10 @@ export function setupAuth(app: Express) {
     try {
       const { username, email, password, firstName, lastName } = req.body;
       
+      if (!username || !email || !password) {
+        return res.status(400).json({ error: "Username, email, and password are required" });
+      }
+
       const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ error: "Username already exists" });
@@ -91,16 +96,26 @@ export function setupAuth(app: Express) {
         username,
         email,
         password: await hashPassword(password),
-        firstName,
-        lastName,
+        firstName: firstName || null,
+        lastName: lastName || null,
       });
 
       req.login(user, (err) => {
-        if (err) return next(err);
-        res.status(201).json({ id: user.id, username: user.username, email: user.email, firstName: user.firstName, lastName: user.lastName });
+        if (err) {
+          console.error("Login error after registration:", err);
+          return next(err);
+        }
+        res.status(201).json({ 
+          id: user.id, 
+          username: user.username, 
+          email: user.email, 
+          firstName: user.firstName, 
+          lastName: user.lastName 
+        });
       });
     } catch (error) {
-      res.status(500).json({ error: "Registration failed" });
+      console.error("Registration error:", error);
+      res.status(500).json({ error: "Registration failed: " + error.message });
     }
   });
 
