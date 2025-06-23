@@ -16,24 +16,212 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
 
   const runCode = () => {
     try {
-      const lines = code.split('\n');
+      const lines = code.split('\n').map(line => line.trimRight());
       let result = '';
       let variables: { [key: string]: any } = {};
       let functions: { [key: string]: { params: string[], body: string[] } } = {};
-      let i = 0;
 
-      const executeLines = (codeLines: string[], startIndex = 0, endIndex?: number): { output: string, nextIndex: number } => {
+      const evaluateExpression = (expr: string, vars: { [key: string]: any }): any => {
+        expr = expr.trim();
+        
+        // String literals
+        if ((expr.startsWith('"') && expr.endsWith('"')) || (expr.startsWith("'") && expr.endsWith("'"))) {
+          return expr.slice(1, -1);
+        }
+        
+        // F-strings
+        if (expr.startsWith('f"') || expr.startsWith("f'")) {
+          let fstring = expr.slice(2, -1);
+          // Replace variables in f-string
+          fstring = fstring.replace(/\{([^}]+)\}/g, (match, varName) => {
+            const cleanVarName = varName.trim();
+            if (vars.hasOwnProperty(cleanVarName)) {
+              return String(vars[cleanVarName]);
+            }
+            return match;
+          });
+          return fstring;
+        }
+        
+        // Numbers
+        if (/^-?\d+(\.\d+)?$/.test(expr)) {
+          return parseFloat(expr);
+        }
+        
+        // Variables
+        if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(expr) && vars.hasOwnProperty(expr)) {
+          return vars[expr];
+        }
+        
+        // Lists
+        if (expr.startsWith('[') && expr.endsWith(']')) {
+          const listContent = expr.slice(1, -1).trim();
+          if (!listContent) return [];
+          return listContent.split(',').map(item => evaluateExpression(item.trim(), vars));
+        }
+        
+        // Dictionaries
+        if (expr.startsWith('{') && expr.endsWith('}')) {
+          const dictContent = expr.slice(1, -1).trim();
+          if (!dictContent) return {};
+          const dict: { [key: string]: any } = {};
+          const pairs = dictContent.split(',');
+          pairs.forEach(pair => {
+            const colonIndex = pair.indexOf(':');
+            if (colonIndex !== -1) {
+              const key = pair.substring(0, colonIndex).trim();
+              const value = pair.substring(colonIndex + 1).trim();
+              const keyEval = evaluateExpression(key, vars);
+              const valueEval = evaluateExpression(value, vars);
+              dict[keyEval] = valueEval;
+            }
+          });
+          return dict;
+        }
+        
+        // Mathematical expressions
+        if (/^[\d\s+\-*/%().]+$/.test(expr)) {
+          try {
+            // Replace variables in math expressions
+            let mathExpr = expr;
+            Object.keys(vars).forEach(varName => {
+              const regex = new RegExp(`\\b${varName}\\b`, 'g');
+              mathExpr = mathExpr.replace(regex, String(vars[varName]));
+            });
+            return Function('"use strict"; return (' + mathExpr + ')')();
+          } catch {
+            return expr;
+          }
+        }
+        
+        // Function calls
+        const funcCallMatch = expr.match(/^(\w+)\(([^)]*)\)$/);
+        if (funcCallMatch) {
+          const funcName = funcCallMatch[1];
+          const argsStr = funcCallMatch[2];
+          
+          if (functions[funcName]) {
+            const args = argsStr ? argsStr.split(',').map(arg => evaluateExpression(arg.trim(), vars)) : [];
+            return callFunction(funcName, args, functions, vars);
+          }
+        }
+        
+        // Method calls on objects (like .get())
+        const methodMatch = expr.match(/^(\w+)\.(\w+)\(([^)]*)\)$/);
+        if (methodMatch) {
+          const objName = methodMatch[1];
+          const methodName = methodMatch[2];
+          const argsStr = methodMatch[3];
+          
+          if (vars[objName] && methodName === 'get') {
+            const args = argsStr ? argsStr.split(',').map(arg => evaluateExpression(arg.trim(), vars)) : [];
+            const obj = vars[objName];
+            if (typeof obj === 'object' && obj !== null) {
+              return obj[args[0]] !== undefined ? obj[args[0]] : (args[1] !== undefined ? args[1] : undefined);
+            }
+          }
+        }
+        
+        return expr;
+      };
+
+      const evaluateCondition = (condition: string, vars: { [key: string]: any }): boolean => {
+        condition = condition.trim();
+        
+        // Handle modulo operations for even/odd checks
+        if (condition.includes('%')) {
+          // Replace variables first
+          let evalCondition = condition;
+          Object.keys(vars).forEach(varName => {
+            const regex = new RegExp(`\\b${varName}\\b`, 'g');
+            evalCondition = evalCondition.replace(regex, String(vars[varName]));
+          });
+          
+          try {
+            return Boolean(Function('"use strict"; return (' + evalCondition + ')')());
+          } catch {
+            return false;
+          }
+        }
+        
+        // Comparison operators
+        const operators = ['==', '!=', '>=', '<=', '>', '<'];
+        for (const op of operators) {
+          if (condition.includes(op)) {
+            const parts = condition.split(op);
+            if (parts.length === 2) {
+              const left = evaluateExpression(parts[0].trim(), vars);
+              const right = evaluateExpression(parts[1].trim(), vars);
+              
+              switch (op) {
+                case '==': return left == right;
+                case '!=': return left != right;
+                case '>=': return left >= right;
+                case '<=': return left <= right;
+                case '>': return left > right;
+                case '<': return left < right;
+              }
+            }
+          }
+        }
+        
+        return Boolean(evaluateExpression(condition, vars));
+      };
+
+      const callFunction = (funcName: string, args: any[], functions: { [key: string]: any }, vars: { [key: string]: any }): any => {
+        if (!functions[funcName]) return undefined;
+        
+        const func = functions[funcName];
+        const savedVars = { ...vars };
+        let returnValue = undefined;
+        
+        // Set parameters
+        args.forEach((arg, index) => {
+          if (index < func.params.length) {
+            vars[func.params[index]] = arg;
+          }
+        });
+        
+        // Execute function body
+        const funcResult = executeLines(func.body, vars, functions);
+        result += funcResult.output;
+        if (funcResult.returnValue !== undefined) {
+          returnValue = funcResult.returnValue;
+        }
+        
+        // Restore variables (simple scope simulation)
+        Object.keys(savedVars).forEach(key => {
+          vars[key] = savedVars[key];
+        });
+        
+        return returnValue;
+      };
+
+      const executeLines = (codeLines: string[], vars = variables, funcs = functions): { output: string, returnValue?: any } => {
         let output = '';
-        let currentIndex = startIndex;
-        const maxIndex = endIndex !== undefined ? endIndex : codeLines.length;
+        let returnValue = undefined;
+        let i = 0;
 
-        while (currentIndex < maxIndex) {
-          const line = codeLines[currentIndex].trim();
+        while (i < codeLines.length) {
+          const line = codeLines[i].trim();
           
           // Skip empty lines and comments
           if (!line || line.startsWith('#')) {
-            currentIndex++;
+            i++;
             continue;
+          }
+
+          // Handle imports (just ignore them)
+          if (line.startsWith('import ') || line.startsWith('from ')) {
+            i++;
+            continue;
+          }
+
+          // Handle return statements
+          if (line.startsWith('return ')) {
+            const returnExpr = line.substring(7).trim();
+            returnValue = evaluateExpression(returnExpr, vars);
+            break;
           }
 
           // Handle function definitions
@@ -41,68 +229,39 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
             const funcMatch = line.match(/def\s+(\w+)\s*\(([^)]*)\)\s*:/);
             if (funcMatch) {
               const funcName = funcMatch[1];
-              const params = funcMatch[2].split(',').map(p => p.trim()).filter(p => p);
+              const params = funcMatch[2] ? funcMatch[2].split(',').map(p => p.trim()).filter(p => p) : [];
               const funcBody: string[] = [];
               
-              currentIndex++;
+              i++;
               // Collect function body (indented lines)
-              while (currentIndex < codeLines.length) {
-                const bodyLine = codeLines[currentIndex];
+              while (i < codeLines.length) {
+                const bodyLine = codeLines[i];
                 if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
                   if (bodyLine.trim()) {
                     funcBody.push(bodyLine.replace(/^    /, '').replace(/^\t/, ''));
                   }
-                  currentIndex++;
+                  i++;
                 } else {
                   break;
                 }
               }
               
-              functions[funcName] = { params, body: funcBody };
+              funcs[funcName] = { params, body: funcBody };
               continue;
             }
           }
 
-          // Handle function calls
-          if (line.includes('(') && line.includes(')') && !line.startsWith('print(') && !line.includes('=')) {
-            const funcCallMatch = line.match(/(\w+)\s*\(([^)]*)\)/);
-            if (funcCallMatch) {
-              const funcName = funcCallMatch[1];
-              const args = funcCallMatch[2].split(',').map(a => a.trim()).filter(a => a);
-              
-              if (functions[funcName]) {
-                const func = functions[funcName];
-                const savedVars = { ...variables };
-                
-                // Set parameters
-                args.forEach((arg, index) => {
-                  if (index < func.params.length) {
-                    const paramName = func.params[index];
-                    variables[paramName] = evaluateExpression(arg, variables);
-                  }
-                });
-                
-                // Execute function body
-                const funcResult = executeLines(func.body);
-                output += funcResult.output;
-                
-                // Restore variables (simple scope simulation)
-                variables = savedVars;
-              }
-            }
-            currentIndex++;
-            continue;
-          }
-
           // Handle variable assignments
           if (line.includes('=') && !line.includes('==') && !line.includes('!=') && 
-              !line.includes('<=') && !line.includes('>=') && !line.includes('+=') && 
-              !line.includes('-=') && !line.includes('*=') && !line.includes('/=')) {
-            const [varName, varValue] = line.split('=').map(s => s.trim());
+              !line.includes('<=') && !line.includes('>=')) {
+            const equalIndex = line.indexOf('=');
+            const varName = line.substring(0, equalIndex).trim();
+            const varValue = line.substring(equalIndex + 1).trim();
+            
             if (varValue) {
-              variables[varName] = evaluateExpression(varValue, variables);
+              vars[varName] = evaluateExpression(varValue, vars);
             }
-            currentIndex++;
+            i++;
             continue;
           }
 
@@ -119,34 +278,33 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
               if (iterableExpr.startsWith('range(')) {
                 const rangeMatch = iterableExpr.match(/range\(([^)]+)\)/);
                 if (rangeMatch) {
-                  const rangeArgs = rangeMatch[1].split(',').map(a => parseInt(a.trim()));
+                  const rangeArgs = rangeMatch[1].split(',').map(a => {
+                    const trimmed = a.trim();
+                    return vars[trimmed] !== undefined ? vars[trimmed] : parseInt(trimmed);
+                  });
                   if (rangeArgs.length === 1) {
-                    iterable = Array.from({length: rangeArgs[0]}, (_, i) => i);
+                    iterable = Array.from({length: rangeArgs[0]}, (_, idx) => idx);
                   } else if (rangeArgs.length === 2) {
-                    iterable = Array.from({length: rangeArgs[1] - rangeArgs[0]}, (_, i) => i + rangeArgs[0]);
+                    iterable = Array.from({length: rangeArgs[1] - rangeArgs[0]}, (_, idx) => idx + rangeArgs[0]);
                   }
                 }
               }
-              // Handle lists
-              else if (iterableExpr.startsWith('[') && iterableExpr.endsWith(']')) {
-                const listContent = iterableExpr.slice(1, -1);
-                iterable = listContent.split(',').map(item => evaluateExpression(item.trim(), variables));
-              }
-              // Handle variables
-              else if (variables[iterableExpr]) {
-                iterable = Array.isArray(variables[iterableExpr]) ? variables[iterableExpr] : [variables[iterableExpr]];
+              // Handle lists and variables
+              else {
+                const evaluated = evaluateExpression(iterableExpr, vars);
+                iterable = Array.isArray(evaluated) ? evaluated : [evaluated];
               }
 
               // Find loop body
               const loopBody: string[] = [];
-              currentIndex++;
-              while (currentIndex < codeLines.length) {
-                const bodyLine = codeLines[currentIndex];
+              i++;
+              while (i < codeLines.length) {
+                const bodyLine = codeLines[i];
                 if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
                   if (bodyLine.trim()) {
                     loopBody.push(bodyLine.replace(/^    /, '').replace(/^\t/, ''));
                   }
-                  currentIndex++;
+                  i++;
                 } else {
                   break;
                 }
@@ -154,8 +312,8 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
 
               // Execute loop
               for (const item of iterable) {
-                variables[iterVar] = item;
-                const loopResult = executeLines(loopBody);
+                vars[iterVar] = item;
+                const loopResult = executeLines(loopBody, vars, funcs);
                 output += loopResult.output;
               }
               continue;
@@ -165,26 +323,128 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
           // Handle if statements
           if (line.startsWith('if ')) {
             const condition = line.replace('if ', '').replace(':', '').trim();
-            const conditionResult = evaluateCondition(condition, variables);
+            const conditionResult = evaluateCondition(condition, vars);
             
             // Find if body
             const ifBody: string[] = [];
-            currentIndex++;
-            while (currentIndex < codeLines.length) {
-              const bodyLine = codeLines[currentIndex];
+            i++;
+            while (i < codeLines.length) {
+              const bodyLine = codeLines[i];
               if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
                 if (bodyLine.trim()) {
                   ifBody.push(bodyLine.replace(/^    /, '').replace(/^\t/, ''));
                 }
-                currentIndex++;
+                i++;
               } else {
                 break;
               }
             }
 
             if (conditionResult) {
-              const ifResult = executeLines(ifBody);
+              const ifResult = executeLines(ifBody, vars, funcs);
               output += ifResult.output;
+            }
+            continue;
+          }
+
+          // Handle elif statements
+          if (line.startsWith('elif ')) {
+            const condition = line.replace('elif ', '').replace(':', '').trim();
+            const conditionResult = evaluateCondition(condition, vars);
+            
+            // Find elif body
+            const elifBody: string[] = [];
+            i++;
+            while (i < codeLines.length) {
+              const bodyLine = codeLines[i];
+              if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
+                if (bodyLine.trim()) {
+                  elifBody.push(bodyLine.replace(/^    /, '').replace(/^\t/, ''));
+                }
+                i++;
+              } else {
+                break;
+              }
+            }
+
+            if (conditionResult) {
+              const elifResult = executeLines(elifBody, vars, funcs);
+              output += elifResult.output;
+            }
+            continue;
+          }
+
+          // Handle else statements
+          if (line === 'else:') {
+            // Find else body
+            const elseBody: string[] = [];
+            i++;
+            while (i < codeLines.length) {
+              const bodyLine = codeLines[i];
+              if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
+                if (bodyLine.trim()) {
+                  elseBody.push(bodyLine.replace(/^    /, '').replace(/^\t/, ''));
+                }
+                i++;
+              } else {
+                break;
+              }
+            }
+
+            const elseResult = executeLines(elseBody, vars, funcs);
+            output += elseResult.output;
+            continue;
+          }
+
+          // Handle try-except blocks
+          if (line.startsWith('try:')) {
+            const tryBody: string[] = [];
+            const exceptBody: string[] = [];
+            const finallyBody: string[] = [];
+            let currentSection = 'try';
+            
+            i++;
+            while (i < codeLines.length) {
+              const bodyLine = codeLines[i];
+              
+              if (bodyLine.trim().startsWith('except')) {
+                currentSection = 'except';
+                i++;
+                continue;
+              } else if (bodyLine.trim() === 'finally:') {
+                currentSection = 'finally';
+                i++;
+                continue;
+              }
+              
+              if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
+                if (bodyLine.trim()) {
+                  const cleanLine = bodyLine.replace(/^    /, '').replace(/^\t/, '');
+                  if (currentSection === 'try') {
+                    tryBody.push(cleanLine);
+                  } else if (currentSection === 'except') {
+                    exceptBody.push(cleanLine);
+                  } else if (currentSection === 'finally') {
+                    finallyBody.push(cleanLine);
+                  }
+                }
+                i++;
+              } else {
+                break;
+              }
+            }
+
+            try {
+              const tryResult = executeLines(tryBody, vars, funcs);
+              output += tryResult.output;
+            } catch (error) {
+              const exceptResult = executeLines(exceptBody, vars, funcs);
+              output += exceptResult.output;
+            } finally {
+              if (finallyBody.length > 0) {
+                const finallyResult = executeLines(finallyBody, vars, funcs);
+                output += finallyResult.output;
+              }
             }
             continue;
           }
@@ -194,174 +454,55 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
             const match = line.match(/print\((.*)\)/);
             if (match) {
               let content = match[1].trim();
-              const evaluated = evaluateExpression(content, variables);
+              const evaluated = evaluateExpression(content, vars);
               output += evaluated + '\n';
             }
-            currentIndex++;
+            i++;
             continue;
           }
 
-          // Handle try-except blocks
-          if (line.startsWith('try:')) {
-            const tryBody: string[] = [];
-            const exceptBody: string[] = [];
-            let inExcept = false;
+          // Handle function calls
+          const funcCallMatch = line.match(/^(\w+)\(([^)]*)\)$/);
+          if (funcCallMatch) {
+            const funcName = funcCallMatch[1];
+            const argsStr = funcCallMatch[2];
             
-            currentIndex++;
-            while (currentIndex < codeLines.length) {
-              const bodyLine = codeLines[currentIndex];
-              if (bodyLine.trim().startsWith('except')) {
-                inExcept = true;
-                currentIndex++;
-                continue;
-              }
-              
-              if (bodyLine.trim() === '' || bodyLine.startsWith('    ') || bodyLine.startsWith('\t')) {
-                if (bodyLine.trim()) {
-                  const cleanLine = bodyLine.replace(/^    /, '').replace(/^\t/, '');
-                  if (inExcept) {
-                    exceptBody.push(cleanLine);
-                  } else {
-                    tryBody.push(cleanLine);
-                  }
-                }
-                currentIndex++;
-              } else {
-                break;
-              }
+            if (funcs[funcName]) {
+              const args = argsStr ? argsStr.split(',').map(arg => evaluateExpression(arg.trim(), vars)) : [];
+              callFunction(funcName, args, funcs, vars);
             }
-
-            try {
-              const tryResult = executeLines(tryBody);
-              output += tryResult.output;
-            } catch (error) {
-              const exceptResult = executeLines(exceptBody);
-              output += exceptResult.output;
-            }
+            i++;
             continue;
           }
 
-          // Handle other statements
-          currentIndex++;
-        }
-
-        return { output, nextIndex: currentIndex };
-      };
-
-      const evaluateExpression = (expr: string, vars: { [key: string]: any }): any => {
-        expr = expr.trim();
-        
-        // String literals
-        if ((expr.startsWith('"') && expr.endsWith('"')) || (expr.startsWith("'") && expr.endsWith("'"))) {
-          return expr.slice(1, -1);
-        }
-        
-        // F-strings
-        if (expr.startsWith('f"') || expr.startsWith("f'")) {
-          let fstring = expr.slice(2, -1);
-          Object.keys(vars).forEach(varName => {
-            const regex = new RegExp(`\\{${varName}\\}`, 'g');
-            fstring = fstring.replace(regex, vars[varName]);
-          });
-          return fstring;
-        }
-        
-        // Numbers
-        if (!isNaN(Number(expr))) {
-          return Number(expr);
-        }
-        
-        // Variables
-        if (vars.hasOwnProperty(expr)) {
-          return vars[expr];
-        }
-        
-        // Lists
-        if (expr.startsWith('[') && expr.endsWith(']')) {
-          const listContent = expr.slice(1, -1);
-          if (!listContent.trim()) return [];
-          return listContent.split(',').map(item => evaluateExpression(item.trim(), vars));
-        }
-        
-        // Dictionaries
-        if (expr.startsWith('{') && expr.endsWith('}')) {
-          const dictContent = expr.slice(1, -1);
-          if (!dictContent.trim()) return {};
-          const dict: { [key: string]: any } = {};
-          const pairs = dictContent.split(',');
-          pairs.forEach(pair => {
-            const [key, value] = pair.split(':');
-            if (key && value) {
-              const keyEval = evaluateExpression(key.trim(), vars);
-              const valueEval = evaluateExpression(value.trim(), vars);
-              dict[keyEval] = valueEval;
+          // Handle method calls (like append, split, etc.)
+          const methodCallMatch = line.match(/^(\w+)\.(\w+)\(([^)]*)\)$/);
+          if (methodCallMatch) {
+            const objName = methodCallMatch[1];
+            const methodName = methodCallMatch[2];
+            const argsStr = methodCallMatch[3];
+            
+            if (vars[objName]) {
+              const args = argsStr ? argsStr.split(',').map(arg => evaluateExpression(arg.trim(), vars)) : [];
+              
+              if (methodName === 'append' && Array.isArray(vars[objName])) {
+                vars[objName].push(args[0]);
+              } else if (methodName === 'split' && typeof vars[objName] === 'string') {
+                const delimiter = args[0] || ' ';
+                vars[objName] = vars[objName].split(delimiter);
+              } else if (methodName === 'lower' && typeof vars[objName] === 'string') {
+                vars[objName] = vars[objName].toLowerCase();
+              }
             }
-          });
-          return dict;
-        }
-        
-        // Simple math expressions
-        if (/^[\d\s+\-*/()%]+$/.test(expr)) {
-          try {
-            return Function('"use strict"; return (' + expr + ')')();
-          } catch {
-            return expr;
+            i++;
+            continue;
           }
-        }
-        
-        // String formatting
-        if (expr.includes('%')) {
-          Object.keys(vars).forEach(varName => {
-            expr = expr.replace(new RegExp(`\\b${varName}\\b`, 'g'), vars[varName]);
-          });
-        }
-        
-        return expr;
-      };
 
-      const evaluateCondition = (condition: string, vars: { [key: string]: any }): boolean => {
-        // Replace variables in condition
-        let evalCondition = condition;
-        Object.keys(vars).forEach(varName => {
-          evalCondition = evalCondition.replace(new RegExp(`\\b${varName}\\b`, 'g'), vars[varName]);
-        });
-        
-        // Handle common comparisons
-        if (evalCondition.includes('==')) {
-          const [left, right] = evalCondition.split('==').map(s => s.trim());
-          return evaluateExpression(left, vars) == evaluateExpression(right, vars);
+          // Skip other unhandled statements
+          i++;
         }
-        if (evalCondition.includes('!=')) {
-          const [left, right] = evalCondition.split('!=').map(s => s.trim());
-          return evaluateExpression(left, vars) != evaluateExpression(right, vars);
-        }
-        if (evalCondition.includes('>=')) {
-          const [left, right] = evalCondition.split('>=').map(s => s.trim());
-          return evaluateExpression(left, vars) >= evaluateExpression(right, vars);
-        }
-        if (evalCondition.includes('<=')) {
-          const [left, right] = evalCondition.split('<=').map(s => s.trim());
-          return evaluateExpression(left, vars) <= evaluateExpression(right, vars);
-        }
-        if (evalCondition.includes('>')) {
-          const [left, right] = evalCondition.split('>').map(s => s.trim());
-          return evaluateExpression(left, vars) > evaluateExpression(right, vars);
-        }
-        if (evalCondition.includes('<')) {
-          const [left, right] = evalCondition.split('<').map(s => s.trim());
-          return evaluateExpression(left, vars) < evaluateExpression(right, vars);
-        }
-        
-        // Handle modulo operations for even/odd checks
-        if (evalCondition.includes('%')) {
-          try {
-            return Boolean(Function('"use strict"; return (' + evalCondition + ')')());
-          } catch {
-            return false;
-          }
-        }
-        
-        return Boolean(evaluateExpression(evalCondition, vars));
+
+        return { output, returnValue };
       };
 
       const executionResult = executeLines(lines);
