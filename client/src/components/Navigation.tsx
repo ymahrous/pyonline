@@ -37,7 +37,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <i className="fab fa-python text-2xl text-python-blue mr-2"></i>
-              <span className="text-xl font-bold text-slate-800">PyLearn</span>
+              <span className="text-xl font-bold text-slate-800">PythonOnline</span>
             </Link>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">

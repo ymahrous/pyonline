@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <i className="fab fa-python text-2xl text-python-yellow mr-2"></i>
-              <span className="text-xl font-bold">PyLearn</span>
+              <span className="text-xl font-bold">PythonOnline</span>
             </div>
             <p className="text-slate-400">
               Making Python learning fun and accessible for everyone.

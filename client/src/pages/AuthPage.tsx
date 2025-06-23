@@ -123,7 +123,7 @@ export default function AuthPage() {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
               <i className="fab fa-python text-3xl text-blue-600 mr-2"></i>
-              <span className="text-2xl font-bold text-slate-800">PyLearn</span>
+              <span className="text-2xl font-bold text-slate-800">PythonOnline</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-800 mb-2">
               {activeTab === "login" ? "Welcome Back" : "Create Account"}
