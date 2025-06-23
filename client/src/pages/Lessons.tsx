@@ -7,9 +7,11 @@ import { CheckCircle } from "lucide-react";
 import { lessons } from "@/data/lessons";
 import { useAuth } from "@/hooks/useAuth";
 import type { LessonProgress } from "@shared/schema";
+import { useLocalStorage } from "@/hooks/useLocalStorage"; // Assuming you have or will create this hook
 
 export default function Lessons() {
   const { isAuthenticated } = useAuth();
+  const [completedLessonIds, setCompletedLessonIds] = useLocalStorage("completedLessons", []);
 
   const { data: progressData } = useQuery<LessonProgress[]>({
     queryKey: ["/api/progress"],
@@ -20,13 +22,27 @@ export default function Lessons() {
     progressData?.filter(p => p.completed).map(p => p.lessonId) || []
   );
 
+  const isLessonCompleted = (lessonId: string) => {
+    return completedLessonIds.includes(lessonId);
+  };
+
+  const getCompletedLessons = () => {
+    return lessons.filter(lesson => completedLessonIds.includes(lesson.id));
+  };
+
+  const totalLessons = lessons.length;
+  const completedCount = isAuthenticated 
+    ? completedLessons.size 
+    : getCompletedLessons().length;
+  const progressPercentage = Math.round((completedCount / totalLessons) * 100);
+
   return (
     <div className="py-12 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Python Lessons</h1>
           <p className="text-lg text-slate-600 mb-8">Master Python step by step with our comprehensive curriculum</p>
-          
+
           {!isAuthenticated && (
             <div className="mb-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
               <p className="text-blue-800">
@@ -35,10 +51,10 @@ export default function Lessons() {
             </div>
           )}
         </div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson) => {
-            const isCompleted = completedLessons.has(lesson.id);
+            const isCompleted = isAuthenticated ? completedLessons.has(lesson.id) : isLessonCompleted(lesson.id);
             return (
               <Card key={lesson.id} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-center mb-4">

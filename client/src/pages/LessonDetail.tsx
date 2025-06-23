@@ -13,6 +13,39 @@ import CompletionModal from "@/components/CompletionModal";
 import { lessons } from "@/data/lessons";
 import type { LessonProgress } from "@shared/schema";
 
+// Local storage utilities for non-authenticated users
+const LOCAL_STORAGE_KEY = 'pylearn_progress';
+
+interface LocalProgress {
+  [lessonId: number]: {
+    completed: boolean;
+    progress: number;
+    completedAt?: string;
+  };
+}
+
+const getLocalProgress = (): LocalProgress => {
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
+  }
+};
+
+const setLocalProgress = (lessonId: number, data: { completed: boolean; progress: number }) => {
+  try {
+    const current = getLocalProgress();
+    current[lessonId] = {
+      ...data,
+      completedAt: data.completed ? new Date().toISOString() : undefined,
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(current));
+  } catch (error) {
+    console.error('Failed to save progress to local storage:', error);
+  }
+};
+
 export default function LessonDetail() {
   const [, params] = useRoute("/lesson/:id");
   const lessonId = parseInt(params?.id || "0");
@@ -28,6 +61,17 @@ export default function LessonDetail() {
     queryKey: ["/api/progress", lessonId],
     enabled: isAuthenticated && !!lessonId,
   });
+
+  // Load progress from local storage for non-authenticated users or when server data isn't available
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const localProgress = getLocalProgress();
+      const localLessonProgress = localProgress[lessonId];
+      if (localLessonProgress) {
+        setProgress(localLessonProgress.completed ? 100 : localLessonProgress.progress);
+      }
+    }
+  }, [lessonId, isAuthenticated]);
 
   const completeLessonMutation = useMutation({
     mutationFn: async () => {
@@ -78,13 +122,18 @@ export default function LessonDetail() {
   const handleCodeRun = () => {
     if (progress < 75) {
       setProgress(75);
+      // Save progress to local storage for non-authenticated users
+      if (!isAuthenticated) {
+        setLocalProgress(lessonId, { completed: false, progress: 75 });
+      }
     }
   };
 
   const handleCompleteLesson = () => {
     if (!isAuthenticated) {
-      // For non-authenticated users, just mark as complete locally and show modal
+      // For non-authenticated users, save to local storage and show modal
       setProgress(100);
+      setLocalProgress(lessonId, { completed: true, progress: 100 });
       setShowCompletionModal(true);
       return;
     }
