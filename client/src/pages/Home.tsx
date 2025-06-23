@@ -2,8 +2,11 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Code, TrendingUp, Smile } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
+  const { isAuthenticated, isLoading } = useAuth();
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -17,12 +20,21 @@ export default function Home() {
             <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
               Master Python programming through engaging lessons, hands-on projects, and a community that celebrates your progress. Start your coding journey today with our beginner-friendly approach.
             </p>
-            <Link href="/lessons">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl">
-                Start Learning
-                <i className="fas fa-arrow-right ml-2"></i>
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/lessons">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl">
+                  Start Learning
+                  <i className="fas fa-arrow-right ml-2"></i>
+                </Button>
+              </Link>
+              {!isAuthenticated && !isLoading && (
+                <Link href="/auth">
+                  <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl">
+                    Create Free Account
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </section>

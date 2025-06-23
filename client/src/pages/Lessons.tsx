@@ -25,7 +25,15 @@ export default function Lessons() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Python Lessons</h1>
-          <p className="text-lg text-slate-600">Master Python step by step with our comprehensive curriculum</p>
+          <p className="text-lg text-slate-600 mb-8">Master Python step by step with our comprehensive curriculum</p>
+          
+          {!isAuthenticated && (
+            <div className="mb-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
+              <p className="text-blue-800">
+                <Link href="/auth" className="underline hover:no-underline font-medium">Create a free account</Link> to track your progress and save your achievements across all lessons!
+              </p>
+            </div>
+          )}
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

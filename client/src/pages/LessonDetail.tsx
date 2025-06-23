@@ -31,23 +31,30 @@ export default function LessonDetail() {
 
   const completeLessonMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/progress", {
-        lessonId,
-        completed: true,
-      });
+      if (isAuthenticated) {
+        await apiRequest("POST", "/api/progress", {
+          lessonId,
+          completed: true,
+        });
+      } else {
+        // For non-authenticated users, just mark as complete locally
+        return Promise.resolve();
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/progress"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/progress", lessonId] });
+      if (isAuthenticated) {
+        queryClient.invalidateQueries({ queryKey: ["/api/progress"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/progress", lessonId] });
+      }
       setProgress(100);
       setShowCompletionModal(true);
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
+          title: "Login Required",
+          description: "Create an account to save your progress permanently.",
+          variant: "default",
         });
         setTimeout(() => {
           window.location.href = "/api/login";
@@ -137,6 +144,13 @@ export default function LessonDetail() {
             initialCode={lesson.example}
             onCodeRun={handleCodeRun}
           />
+          {!isAuthenticated && (
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-800 text-sm">
+                💡 <Link href="/auth" className="underline hover:no-underline font-medium">Create a free account</Link> to save your progress and track your achievements!
+              </p>
+            </div>
+          )}
           <div className="flex justify-between items-center mt-4">
             <div />
             <Button 

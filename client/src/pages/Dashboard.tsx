@@ -14,20 +14,33 @@ export default function Dashboard() {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
+  // Show login prompt if not authenticated
+  if (!isLoading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">
+              Dashboard Access
+            </h1>
+            <p className="text-lg text-gray-600 mb-8">
+              Create an account to track your learning progress and view detailed statistics.
+            </p>
+            <Button asChild size="lg">
+              <Link href="/auth">Login or Sign Up</Link>
+            </Button>
+            <div className="mt-6">
+              <Link href="/lessons">
+                <Button variant="outline" size="lg">
+                  Continue Without Account
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const { data: progressData } = useQuery<LessonProgress[]>({
     queryKey: ["/api/progress"],
