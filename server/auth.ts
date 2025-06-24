@@ -115,7 +115,7 @@ export function setupAuth(app: Express) {
       });
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(500).json({ error: "Registration failed: " + error.message });
+      res.status(500).json({ error: "Registration failed: " + error });
     }
   });
 

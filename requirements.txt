@@ -1,0 +1,5 @@
+# Basic Python libraries
+numpy
+pandas
+requests
+flask
