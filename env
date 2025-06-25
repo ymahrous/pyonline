@@ -1,7 +1,0 @@
-DATABASE_URL=postgresql://neondb_owner:npg_N3HbAZJDB6eS@ep-divine-field-a2mkicu7.eu-central-1.aws.neon.tech/neondb?sslmode=require
-SESSION_SECRET=/FDiEGhkgRrU32L15/KYXFYINGA8rtzXY9ZLsr0+FDbwkxxy7jRZq+XrBZ8Xu6QF4z7Z7N6Xbv9yt7qJV//8kw==
-PGDATABASE=neondb
-PGHOST=ep-divine-field-a2mkicu7.eu-central-1.aws.neon.tech
-PGPORT=5432
-PGUSER=neondb_owner
-PGPASSWORD=npg_N3HbAZJDB6eS

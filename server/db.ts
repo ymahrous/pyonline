@@ -8,6 +8,12 @@ neonConfig.webSocketConstructor = ws;
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, schema });
 
+
+
+
+
+
+
 // Option 2: For regular PostgreSQL (local, hosted, or cloud)
 // import { Pool } from 'pg';
 // import { drizzle } from 'drizzle-orm/node-postgres';
