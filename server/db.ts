@@ -1,4 +1,4 @@
-import * as schema from "@shared/schema.js";
+import * as schema from "../shared/schema.js";
 
 // Option 1: For Neon (serverless PostgreSQL)
 import { Pool, neonConfig } from "@neondatabase/serverless";

@@ -5,7 +5,7 @@ import {
   type InsertUser,
   type LessonProgress,
   type InsertLessonProgress,
-} from "@shared/schema.js";
+} from "../shared/schema.js";
 import { db } from "./db.js";
 import { eq, and } from "drizzle-orm";
 
