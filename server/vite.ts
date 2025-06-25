@@ -73,7 +73,7 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "dist");
+  const distPath = __dirname;
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
