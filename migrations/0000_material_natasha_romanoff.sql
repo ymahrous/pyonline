@@ -1,5 +1,9 @@
+DROP TABLE IF EXISTS "lesson_progress" CASCADE;
+DROP TABLE IF EXISTS "sessions" CASCADE;
+DROP TABLE IF EXISTS "users" CASCADE;
+
 CREATE TABLE "lesson_progress" (
-	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "lesson_progress_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	"user_id" integer NOT NULL,
 	"lesson_id" integer NOT NULL,
 	"completed" boolean DEFAULT false,
