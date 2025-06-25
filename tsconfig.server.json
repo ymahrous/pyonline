@@ -14,10 +14,10 @@
   "include": [
     "server/**/*",
     "shared/**/*",
-    "dist"
   ],
   "exclude": [
     "client/**/*",
     "node_modules",
+    "dist"
   ]
 }
