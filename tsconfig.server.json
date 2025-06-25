@@ -13,11 +13,11 @@
   },
   "include": [
     "server/**/*",
-    "shared/**/*"
+    "shared/**/*",
+    "dist"
   ],
   "exclude": [
     "client/**/*",
     "node_modules",
-    "dist",
   ]
 }
