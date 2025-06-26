@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const viteLogger = createLogger();
-const __filename = fileURLToPath(import.meta.dirname);
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export function log(message: string, source = "express") {
@@ -75,11 +75,11 @@ export async function setupVite(app: Express, server: Server) {
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "public");
 
-  if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
-  }
+  // if (!fs.existsSync(distPath)) {
+  //   throw new Error(
+  //     `Could not find the build directory: ${distPath}, make sure to build the client first`,
+  //   );
+  // }
 
   app.use(express.static(distPath));
   // fall through to index.html if the file doesn't exist
