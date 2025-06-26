@@ -31,5 +31,6 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
+    allowedHosts: ["rest-express-production-fa4c.up.railway.app"]
   },
 });
