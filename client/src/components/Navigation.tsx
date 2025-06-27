@@ -91,9 +91,12 @@ export default function Navigation() {
                           </div>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <a href="/api/logout" className="w-full cursor-pointer">
+                          <button onClick={async () => {
+                            await fetch("/api/logout", { method: "POST" });
+                            window.location.href = "/";
+                          }} className="w-full cursor-pointer">
                             Logout
-                          </a>
+                          </button>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

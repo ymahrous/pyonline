@@ -97,15 +97,15 @@ export default function Contact() {
             <div className="space-y-4">
               <div className="flex items-center">
                 <Mail className="text-blue-600 mr-4" size={20} />
-                <span className="text-slate-600">support@pylearn.com</span>
+                <span className="text-slate-600">support@yahoo.com</span>
               </div>
               <div className="flex items-center">
                 <Twitter className="text-blue-600 mr-4" size={20} />
-                <span className="text-slate-600">@PyLearnPlatform</span>
+                <span className="text-slate-600">@TwitterUsername</span>
               </div>
               <div className="flex items-center">
                 <Github className="text-blue-600 mr-4" size={20} />
-                <span className="text-slate-600">github.com/pylearn</span>
+                <span className="text-slate-600">GitHub.com</span>
               </div>
             </div>
             
