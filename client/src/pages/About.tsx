@@ -13,7 +13,7 @@ export default function About() {
     <div className="py-12 bg-white min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">About PythonOnline</h1>
+          <h1 className="text-4xl font-bold text-slate-800 mb-4">About Pyon</h1>
           <p className="text-lg text-slate-600">Making Python accessible, enjoyable, and effective for everyone</p>
         </div>
         
@@ -21,7 +21,7 @@ export default function About() {
           <Card className="bg-blue-50 p-8 mb-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-4">Our Mission</h2>
             <p className="text-slate-700">
-              At PythonOnline, we believe that learning to code should be fun, interactive, and accessible to everyone. 
+              At Pyon, we believe that learning to code should be fun, interactive, and accessible to everyone. 
               Our platform combines structured learning with engaging content to help you master Python programming 
               at your own pace. Whether you're a complete beginner or looking to strengthen your skills, 
               we're here to support your coding journey.
@@ -43,7 +43,7 @@ export default function About() {
             <div>
               <h3 className="text-xl font-semibold text-slate-800 mb-4">About the Creator</h3>
               <p className="text-slate-600 mb-4">
-                PythonOnline was created by passionate developers who understand the challenges of learning 
+                Pyon was created by passionate developers who understand the challenges of learning 
                 programming. With years of experience in education and software development, our team 
                 is dedicated to creating the best possible learning experience.
               </p>

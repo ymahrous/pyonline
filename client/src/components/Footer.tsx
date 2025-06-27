@@ -1,4 +1,3 @@
-
 import { Link } from "wouter";
 
 export default function Footer() {
@@ -9,7 +8,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <i className="fab fa-python text-2xl text-python-yellow mr-2"></i>
-              <span className="text-xl font-bold">PythonOnline</span>
+              <span className="text-xl font-bold">Pyon</span>
             </div>
             <p className="text-slate-400">
               Making Python learning fun and accessible for everyone.
@@ -109,7 +108,7 @@ export default function Footer() {
         </div>
         <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
           <p>
-            &copy; 2025 PythonOnline. All rights reserved. Made with ❤️ for
+            &copy; 2025 Pyon. All rights reserved. Made with ❤️ for
             Python learners.
           </p>
         </div>

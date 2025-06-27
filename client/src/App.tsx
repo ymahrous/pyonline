@@ -1,19 +1,19 @@
+import Home from "@/pages/Home";
+import About from "@/pages/About";
+import Lessons from "@/pages/Lessons";
+import Contact from "@/pages/Contact";
 import { Switch, Route } from "wouter";
+import Projects from "@/pages/Projects";
+import AuthPage from "@/pages/AuthPage";
+import Footer from "@/components/Footer";
+import NotFound from "@/pages/not-found";
+import Dashboard from "@/pages/Dashboard";
 import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
+import LessonDetail from "@/pages/LessonDetail";
+import Navigation from "@/components/Navigation";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
-import Home from "@/pages/Home";
-import Lessons from "@/pages/Lessons";
-import LessonDetail from "@/pages/LessonDetail";
-import Dashboard from "@/pages/Dashboard";
-import Projects from "@/pages/Projects";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact";
-import AuthPage from "@/pages/AuthPage";
-import NotFound from "@/pages/not-found";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   return (

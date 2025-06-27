@@ -1,12 +1,12 @@
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
+import { promisify } from "util";
 import { Express } from "express";
 import session from "express-session";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
-import { promisify } from "util";
 import { storage } from "./storage.js";
-import { User as SelectUser } from "../shared/schema.js";
 import connectPg from "connect-pg-simple";
+import { User as SelectUser } from "../shared/schema.js";
+import { Strategy as LocalStrategy } from "passport-local";
+import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 
 declare global {
   namespace Express {

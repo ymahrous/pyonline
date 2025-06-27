@@ -1,7 +1,7 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "./storage.js";
 import { setupAuth } from "./auth.js";
+import type { Express } from "express";
+import { storage } from "./storage.js";
+import { createServer, type Server } from "http";
 import { insertLessonProgressSchema } from "../shared/schema.js";
 
 function isAuthenticated(req: any, res: any, next: any) {
