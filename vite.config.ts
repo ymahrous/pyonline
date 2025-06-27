@@ -10,7 +10,8 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [
-    EnvironmentPlugin(['DATABASE_URL', 'SESSION_SECRET', 'PGDATABASE', 'PGHOST', 'PGPORT', 'PGUSER', 'PGPASSWORD']),
+    EnvironmentPlugin(['DATABASE_URL', 'SESSION_SECRET', 'NODE_ENV']),
+    // 'PGDATABASE', 'PGHOST', 'PGPORT', 'PGUSER'
     react(),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production"? [await import("@replit/vite-plugin-cartographer").then((m) => m.cartographer())]: []),
