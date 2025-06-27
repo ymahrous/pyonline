@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { celebrationMemes } from "@/data/lessons";
+// import { celebrationMemes } from "@/data/lessons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface CompletionModalProps {
@@ -16,14 +16,14 @@ export default function CompletionModal({
   onNextLesson,
   hasNextLesson,
 }: CompletionModalProps) {
-  const [memeUrl, setMemeUrl] = useState("");
+  // const [memeUrl, setMemeUrl] = useState("");
 
-  useEffect(() => {
-    if (open) {
-      const randomMeme = celebrationMemes[Math.floor(Math.random() * celebrationMemes.length)];
-      setMemeUrl(randomMeme);
-    }
-  }, [open]);
+  // useEffect(() => {
+  //   if (open) {
+  //     const randomMeme = celebrationMemes[Math.floor(Math.random() * celebrationMemes.length)];
+  //     setMemeUrl(randomMeme);
+  //   }
+  // }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -34,13 +34,13 @@ export default function CompletionModal({
           </DialogTitle>
         </DialogHeader>
         <div className="text-center">
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <img
               src={memeUrl}
               alt="Congratulations on completing the lesson!"
               className="rounded-lg w-full h-64 object-cover"
             />
-          </div>
+          </div> */}
           <p className="text-lg text-slate-600 mb-6">
             Great job! You've successfully completed this lesson. Keep up the excellent work!
           </p>

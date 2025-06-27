@@ -105,7 +105,7 @@ export default function Home() {
             Ready to Start Your Python Journey?
           </h2>
           <p className="text-lg text-slate-600 mt-6">
-            Join thousands of learners who are having fun while mastering
+            Join learners who are having fun while mastering
             Python!
           </p>
         </div>
