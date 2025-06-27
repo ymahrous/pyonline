@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <i className="fab fa-python text-2xl text-python-yellow mr-2"></i>
-              <span className="text-xl font-bold">Pyon</span>
+              <span className="text-xl font-bold">PyOnline</span>
             </div>
             <p className="text-slate-400">
               Making Python learning fun and accessible for everyone.
@@ -55,22 +55,22 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Community</h3>
             <ul className="space-y-2 text-slate-400">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="https://discord.com/invite/python" className="hover:text-white transition-colors">
                   Discord
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="https://www.reddit.com/r/Python/" className="hover:text-white transition-colors">
                   Reddit
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="https://stackoverflow.com/questions/tagged/python" className="hover:text-white transition-colors">
                   Stack Overflow
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="https://stackoverflow.com/questions/tagged/python" className="hover:text-white transition-colors">
                   Blog
                 </a>
               </li>
@@ -80,25 +80,25 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://twitter.com"
                 className="text-slate-400 hover:text-white transition-colors"
               >
                 <i className="fab fa-twitter text-xl"></i>
               </a>
               <a
-                href="#"
+                href="https://github.com"
                 className="text-slate-400 hover:text-white transition-colors"
               >
                 <i className="fab fa-github text-xl"></i>
               </a>
               <a
-                href="#"
+                href="https://linkedin.com"
                 className="text-slate-400 hover:text-white transition-colors"
               >
                 <i className="fab fa-linkedin text-xl"></i>
               </a>
               <a
-                href="#"
+                href="https://youtube.com"
                 className="text-slate-400 hover:text-white transition-colors"
               >
                 <i className="fab fa-youtube text-xl"></i>
@@ -108,8 +108,7 @@ export default function Footer() {
         </div>
         <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
           <p>
-            &copy; 2025 Pyon. All rights reserved. Made with ❤️ for
-            Python learners.
+            &copy; 2025 PyOnline. All rights reserved. Made for Python learners.
           </p>
         </div>
       </div>
