@@ -91,7 +91,7 @@ export default function Footer() {
               >
                 <i className="fab fa-github text-xl"></i>
               </a>
-              <a
+              {/* <a
                 href="https://linkedin.com"
                 className="text-slate-400 hover:text-white transition-colors"
               >
@@ -102,7 +102,7 @@ export default function Footer() {
                 className="text-slate-400 hover:text-white transition-colors"
               >
                 <i className="fab fa-youtube text-xl"></i>
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
