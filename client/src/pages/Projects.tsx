@@ -1,8 +1,21 @@
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import CodeEditor from "../components/CodeEditor";
 import { Calculator, ListChecks, Dice1, Worm } from "lucide-react";
 
 export default function Projects() {
+  const [activeProject, setActiveProject] = useState<any>(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const handleStartProject = (project: any) => {
+    setActiveProject(project);
+    setIsEditorOpen(true);
+  };
+  const handleCloseEditor = () => {
+    setIsEditorOpen(false);
+    setActiveProject(null);
+  };
+
   const projects = [
     {
       id: 1,
@@ -14,7 +27,16 @@ export default function Projects() {
         "GUI development with tkinter",
         "Event handling and user input",
         "Mathematical operations in Python"
-      ]
+      ],
+    starterCode: `def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+print("Calculator")
+print("2 + 3 =", add(2, 3))
+print("5 - 2 =", subtract(5, 2))`,
     },
     {
       id: 2,
@@ -26,7 +48,14 @@ export default function Projects() {
         "File I/O operations",
         "Data persistence",
         "Command-line interfaces"
-      ]
+      ],
+    starterCode: `secret_number = 7
+guess = 5
+
+if guess == secret_number:
+    print("You guessed it!")
+else:
+    print("Wrong guess. Try again!")`,
     },
     {
       id: 3,
@@ -38,7 +67,14 @@ export default function Projects() {
         "Random number generation",
         "Loops and conditional statements",
         "User input validation"
-      ]
+      ],
+       starterCode: `secret_number = 7
+        guess = 5
+
+        if guess == secret_number:
+            print("You guessed it!")
+        else:
+            print("Wrong guess. Try again!")`,
     },
     {
       id: 4,
@@ -50,7 +86,10 @@ export default function Projects() {
         "HTTP requests with requests library",
         "HTML parsing with BeautifulSoup",
         "Data extraction and processing"
-      ]
+      ],
+      starterCode: `print("Simulated Web Scraper")
+  print("Fetching data from https://example.com...")
+  print("Title: Example Domain")`,
     }
   ];
 
@@ -104,14 +143,28 @@ export default function Projects() {
                     ))}
                   </ul>
                 </div>
-                <Button className={`w-full ${colorClasses.button} text-white`}>
-                  Start Project
-                </Button>
+                <Button onClick={() => handleStartProject(project)} className={`w-full ${colorClasses.button} text-white`}>Start Project</Button>
               </Card>
             );
           })}
         </div>
       </div>
+      {isEditorOpen && activeProject && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">{activeProject.title}</h2>
+              <button
+                onClick={handleCloseEditor}
+                className="text-red-600 hover:underline"
+              >
+                Close
+              </button>
+            </div>
+            <CodeEditor initialCode={activeProject.starterCode} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

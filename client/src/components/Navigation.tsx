@@ -32,7 +32,14 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <i className="fab fa-python text-2xl text-python-blue mr-2"></i>
-              <span className="text-xl font-bold text-slate-800">PyOnline</span>
+              <div className="text-center">
+                <span className="text-xl font-bold text-slate-800">
+                  PyOnline
+                </span>
+                <span className="className=inline-block mt-2 px-2 py-0.5 bg-gray-200 text-gray-800 text-xs rounded-full font-semibold uppercase tracking-wider">
+                  Beta
+                </span>
+              </div>
             </Link>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">
