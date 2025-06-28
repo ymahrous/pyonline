@@ -3,10 +3,10 @@ import { CheckCircle } from "lucide-react";
 
 export default function About() {
   const features = [
-    "Interactive coding environment right in your browser",
-    "Progress tracking to keep you motivated",
+    "Interactive coding environment",
+    "Progress tracking",
     "Fun memes and engaging content",
-    "Real-world projects to build your portfolio"
+    "Build real-world projects"
   ];
 
   return (
@@ -41,15 +41,14 @@ export default function About() {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-slate-800 mb-4">About the Creator</h3>
+              <h3 className="text-xl font-semibold text-slate-800 mb-4">About PyOnline Team</h3>
               <p className="text-slate-600 mb-4">
                 PyOnline was created by passionate developers who understand the challenges of learning 
-                programming. With years of experience in education and software development, our team 
-                is dedicated to creating the best possible learning experience.
+                programming. Our team is dedicated to creating the best possible learning experience.
               </p>
               <p className="text-slate-600">
-                We're constantly improving our platform based on user feedback and the latest 
-                educational research to ensure you have the tools you need to succeed.
+                We're constantly improving our platform based on user feedback and latest 
+                educational research to ensure you have the tools you need to learn Python.
               </p>
             </div>
           </div>

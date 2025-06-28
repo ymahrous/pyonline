@@ -49,13 +49,7 @@ print("5 - 2 =", subtract(5, 2))`,
         "Data persistence",
         "Command-line interfaces"
       ],
-    starterCode: `secret_number = 7
-guess = 5
-
-if guess == secret_number:
-    print("You guessed it!")
-else:
-    print("Wrong guess. Try again!")`,
+    starterCode: ``,
     },
     {
       id: 3,
@@ -68,13 +62,11 @@ else:
         "Loops and conditional statements",
         "User input validation"
       ],
-       starterCode: `secret_number = 7
-        guess = 5
-
-        if guess == secret_number:
-            print("You guessed it!")
-        else:
-            print("Wrong guess. Try again!")`,
+       starterCode: `secret_number = 7\nguess = 5
+      if guess == secret_number:
+        print("You guessed it!")
+      else:
+        print("Wrong guess. Try again!")`,
     },
     {
       id: 4,
@@ -87,9 +79,7 @@ else:
         "HTML parsing with BeautifulSoup",
         "Data extraction and processing"
       ],
-      starterCode: `print("Simulated Web Scraper")
-  print("Fetching data from https://example.com...")
-  print("Title: Example Domain")`,
+      starterCode: 'print("Simulated Web Scraper")\nprint("Fetching data from https://example.com...")\nprint("Title: Example Domain")',
     }
   ];
 

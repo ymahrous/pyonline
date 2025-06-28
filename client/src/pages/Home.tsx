@@ -1,8 +1,8 @@
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Code, TrendingUp, Smile } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Code, TrendingUp, Smile } from "lucide-react";
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -105,7 +105,7 @@ export default function Home() {
             Ready to Start Your Python Journey?
           </h2>
           <p className="text-lg text-slate-600 mt-6">
-            Join learners who are having fun while mastering
+            Join learners who are having fun while coding
             Python!
           </p>
         </div>
