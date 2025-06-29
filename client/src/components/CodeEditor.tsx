@@ -22,37 +22,34 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
   const [pyodide, setPyodide] = useState<null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
     const initPyodide = async () => {
-      if (typeof window === "undefined") return; // ✅ Prevent SSR crash
-      if (typeof document === "undefined") return;
-      
-      if (window.__PYODIDE_INSTANCE__) {
-        setPyodide(window.__PYODIDE_INSTANCE__);
-        setLoading(false);
-        return;
-      }
+    if ((window as any).__PYODIDE_INSTANCE__) {
+      setPyodide((window as any).__PYODIDE_INSTANCE__);
+      setLoading(false);
+      return;
+    }
 
-      if (!window.loadPyodide) {
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
-        script.onload = async () => {
-          const instance = await window.loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
-          });
-          window.__PYODIDE_INSTANCE__ = instance;
-          setPyodide(instance);
-          setLoading(false);
-        };
-        document.body.appendChild(script);
-      } else {
-        const instance = await window.loadPyodide({
-          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
-        });
-        window.__PYODIDE_INSTANCE__ = instance;
-        setPyodide(instance);
-        setLoading(false);
-      }
+    const load = async () => {
+      const instance = await (window as any).loadPyodide({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
+      });
+      (window as any).__PYODIDE_INSTANCE__ = instance;
+      setPyodide(instance);
+      setLoading(false);
     };
+
+    // Load script if needed
+    if (!(window as any).loadPyodide) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
+      script.onload = load;
+      script.onerror = (e) => console.error("Pyodide load error", e);
+      document.body.appendChild(script);
+    } else {
+      load();
+    }
+  };
     initPyodide();
   }, []);
 
