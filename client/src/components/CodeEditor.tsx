@@ -7,7 +7,6 @@ interface CodeEditorProps {
   initialCode: string;
   onCodeRun?: (code: string) => void;
 }
-
 declare global {
   interface Window {
     __PYODIDE_INSTANCE__?: any;
