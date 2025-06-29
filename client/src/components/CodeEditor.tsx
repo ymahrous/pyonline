@@ -19,7 +19,7 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState("");
   const [showOutput, setShowOutput] = useState(false);
-  const [pyodide, setPyodide] = useState<null>(null);
+  const [pyodide, setPyodide] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (typeof window === "undefined" || typeof document === "undefined") return;
