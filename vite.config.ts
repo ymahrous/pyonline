@@ -33,7 +33,4 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-  optimizeDeps: {
-    exclude: ["pyodide"],
-  }
 });
