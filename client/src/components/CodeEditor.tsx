@@ -23,6 +23,9 @@ export default function CodeEditor({ initialCode, onCodeRun }: CodeEditorProps) 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const initPyodide = async () => {
+      if (typeof window === "undefined") return; // ✅ Prevent SSR crash
+      if (typeof document === "undefined") return;
+      
       if (window.__PYODIDE_INSTANCE__) {
         setPyodide(window.__PYODIDE_INSTANCE__);
         setLoading(false);
