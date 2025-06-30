@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { send } from "@emailjs/browser";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Mail, Twitter, Github, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Mail, Twitter, Github, ArrowRight } from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -15,14 +16,28 @@ export default function Contact() {
   });
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual form submission to backend
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for your message! We'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", message: "" });
+
+    const serviceId = "service_xbshojd";
+    const templateId = "template_nmlms2k";
+    const userId = "JZPEkIsbsugFGWrza";
+
+    try {
+      await send(serviceId, templateId, formData, userId);
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your message! We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast({
+        title: "Error",
+        description: "There was an issue sending your message. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
