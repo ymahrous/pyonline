@@ -19,9 +19,9 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const serviceId = "service_xbshojd";
-    const templateId = "template_nmlms2k";
-    const userId = "JZPEkIsbsugFGWrza";
+    const serviceId = process.env.SERVICE_ID;
+    const templateId = process.env.TEMP_ID;
+    const userId = process.env.USER_ID;
 
     try {
       await send(serviceId, templateId, formData, userId);
