@@ -3,7 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export default function Navigation() {
@@ -110,7 +110,7 @@ export default function Navigation() {
                   </div>
                 ) : (
                   <div className="flex items-center space-x-4">
-                    <Link href="/auth">
+                    <Link href="/auth?tab=login">
                       <Button
                         variant="ghost"
                         className="text-slate-600 hover:text-blue-600"
@@ -118,7 +118,7 @@ export default function Navigation() {
                         Login
                       </Button>
                     </Link>
-                    <Link href="/auth">
+                    <Link href="/auth?tab=signup">
                       <Button
                         className="bg-blue-600 hover:bg-blue-700 text-white"
                       >

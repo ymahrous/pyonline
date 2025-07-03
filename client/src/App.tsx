@@ -1,5 +1,6 @@
 import Home from "@/pages/Home";
 import About from "@/pages/About";
+import Terms from "@/pages/Terms";
 import Lessons from "@/pages/Lessons";
 import Contact from "@/pages/Contact";
 import { Switch, Route } from "wouter";
@@ -11,6 +12,7 @@ import Dashboard from "@/pages/Dashboard";
 import { queryClient } from "./lib/queryClient";
 import LessonDetail from "@/pages/LessonDetail";
 import Navigation from "@/components/Navigation";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -30,6 +32,8 @@ function App() {
               <Route path="/projects" component={Projects} />
               <Route path="/about" component={About} />
               <Route path="/contact" component={Contact} />
+              <Route path="/terms-and-conditions" component={Terms} />
+              <Route path="/privacy-policy" component={PrivacyPolicy} />
               <Route path="/auth" component={AuthPage} />
               <Route component={NotFound} />
             </Switch>

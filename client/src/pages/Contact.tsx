@@ -116,15 +116,18 @@ export default function Contact() {
               </div>
               <div className="flex items-center">
                 <Twitter className="text-blue-600 mr-4" size={20} />
-                <span className="text-slate-600">@TwitterUsername</span>
+                <a target="_blank" href="https://twitter.com" className="text-slate-400 hover:text-white transition-colors">
+                  <span className="text-slate-600">Twitter</span>
+                </a>
               </div>
               <div className="flex items-center">
                 <Github className="text-blue-600 mr-4" size={20} />
-                <span className="text-slate-600">GitHub.com</span>
+                <a target="_blank" href="https://github.com/ymahrous" className="text-slate-400 hover:text-white transition-colors">
+                  <span className="text-slate-600">GitHub</span>
+                </a>
               </div>
             </div>
-            
-            <Card className="mt-8 p-6 bg-blue-50">
+            {/* <Card className="mt-8 p-6 bg-blue-50">
               <h3 className="text-lg font-semibold text-slate-800 mb-2">Frequently Asked Questions</h3>
               <p className="text-slate-600 text-sm mb-4">
                 Before reaching out, check our FAQ section for quick answers to common questions 
@@ -133,7 +136,7 @@ export default function Contact() {
               <Button variant="ghost" className="text-blue-600 hover:text-blue-800 text-sm font-medium p-0">
                 View FAQ <ArrowRight className="ml-1" size={16} />
               </Button>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </div>

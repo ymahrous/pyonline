@@ -79,9 +79,9 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a target="_blank" href="https://twitter.com" className="text-slate-400 hover:text-white transition-colors">
+              {/* <a target="_blank" href="https://twitter.com" className="text-slate-400 hover:text-white transition-colors">
                 <i className="fab fa-twitter text-xl"></i>
-              </a>
+              </a> */}
               <a target="_blank" href="https://github.com/ymahrous" className="text-slate-400 hover:text-white transition-colors">
                 <i className="fab fa-github text-xl"></i>
               </a>
@@ -91,22 +91,27 @@ export default function Footer() {
                 className="text-slate-400 hover:text-white transition-colors"
               >
                 <i className="fab fa-linkedin text-xl"></i>
-              </a>
-              <a
-                target="_blank"
-                href="https://youtube.com"
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                <i className="fab fa-youtube text-xl"></i>
               </a> */}
             </div>
           </div>
         </div>
-        <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+        
+        <div className="border-t border-slate-700 mt-8 pt-6 text-center text-slate-400">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <span>&copy; 2025 Yousef Mahrous. All rights reserved.</span>
+            <nav className="flex space-x-6">
+              <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Terms and Conditions</a>
+              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a>
+            </nav>
+          </div>
+        </div>
+        {/* <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
           <p>
             &copy; 2025 PyOnline. All rights reserved.
+            {" "}<a target="_blank" href="/terms-and-conditions" className="text-slate-400 hover:text-white transition-colors">Terms and Conditions</a>
+            {" "}|{" "}<a target="_blank" href="/privacy-policy" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a>
           </p>
-        </div>
+        </div> */}
       </div>
     </footer>
   );
