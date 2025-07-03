@@ -1,3 +1,4 @@
+import Faq from "@/pages/Faq";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Terms from "@/pages/Terms";
@@ -34,6 +35,7 @@ function App() {
               <Route path="/contact" component={Contact} />
               <Route path="/terms-and-conditions" component={Terms} />
               <Route path="/privacy-policy" component={PrivacyPolicy} />
+              <Route path="/faq" component={Faq} />
               <Route path="/auth" component={AuthPage} />
               <Route component={NotFound} />
             </Switch>

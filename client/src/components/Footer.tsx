@@ -102,16 +102,10 @@ export default function Footer() {
             <nav className="flex space-x-6">
               <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Terms and Conditions</a>
               <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a>
+              <a href="/faq" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">FAQ</a>
             </nav>
           </div>
         </div>
-        {/* <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
-          <p>
-            &copy; 2025 PyOnline. All rights reserved.
-            {" "}<a target="_blank" href="/terms-and-conditions" className="text-slate-400 hover:text-white transition-colors">Terms and Conditions</a>
-            {" "}|{" "}<a target="_blank" href="/privacy-policy" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a>
-          </p>
-        </div> */}
       </div>
     </footer>
   );
