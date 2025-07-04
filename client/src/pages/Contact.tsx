@@ -106,9 +106,8 @@ export default function Contact() {
               </Button>
             </form>
           </div>
-          
           <div>
-            <h2 className="text-2xl font-semibold text-slate-800 mb-6">Other Ways to Reach Us</h2>
+            {/* <h2 className="text-2xl font-semibold text-slate-800 mb-6">Other Ways to Reach Us</h2>
             <div className="space-y-4">
               <div className="flex items-center">
                 <Mail className="text-blue-600 mr-4" size={20} />
@@ -122,11 +121,11 @@ export default function Contact() {
               </div>
               <div className="flex items-center">
                 <Github className="text-blue-600 mr-4" size={20} />
-                <a target="_blank" rel="noopener noreferrer" href="https://github.com/ymahrous" className="text-slate-400 hover:text-white transition-colors">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com" className="text-slate-400 hover:text-white transition-colors">
                   <span className="text-slate-600">GitHub</span>
                 </a>
               </div>
-            </div>
+            </div> */}
             <Card className="mt-8 p-6 bg-blue-50">
               <h3 className="text-lg font-semibold text-slate-800 mb-2">Frequently Asked Questions</h3>
               <p className="text-slate-600 text-sm mb-4">
