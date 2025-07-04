@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 // import { celebrationMemes } from "@/data/lessons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,21 +9,14 @@ interface CompletionModalProps {
   hasNextLesson: boolean;
 }
 
-export default function CompletionModal({
-  open,
-  onClose,
-  onNextLesson,
-  hasNextLesson,
-}: CompletionModalProps) {
+export default function CompletionModal({ open, onClose, onNextLesson, hasNextLesson }: CompletionModalProps) {
   // const [memeUrl, setMemeUrl] = useState("");
-
   // useEffect(() => {
   //   if (open) {
   //     const randomMeme = celebrationMemes[Math.floor(Math.random() * celebrationMemes.length)];
   //     setMemeUrl(randomMeme);
   //   }
   // }, [open]);
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">

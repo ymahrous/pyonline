@@ -1,11 +1,11 @@
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle } from "lucide-react";
 import { lessons } from "@/data/lessons";
 import { useAuth } from "@/hooks/useAuth";
+import { CheckCircle } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import type { LessonProgress } from "@shared/schema";
 import { useLocalProgress } from "@/hooks/useLocalProgress";
 

@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
+import { lessons } from "@/data/lessons";
 import { useAuth } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { isUnauthorizedError } from "@/lib/authUtils";
+import { Button } from "@/components/ui/button";
 import CodeEditor from "@/components/CodeEditor";
-import CompletionModal from "@/components/CompletionModal";
-import { lessons } from "@/data/lessons";
+import { Progress } from "@/components/ui/progress";
 import type { LessonProgress } from "@shared/schema";
+import { isUnauthorizedError } from "@/lib/authUtils";
+import CompletionModal from "@/components/CompletionModal";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // Local storage utilities for non-authenticated users
 const LOCAL_STORAGE_KEY = 'pylearn_progress';

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 const LOCAL_STORAGE_KEY = 'pylearn_progress';

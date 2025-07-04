@@ -1,14 +1,13 @@
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, TrendingUp, Flame } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
 import { lessons } from "@/data/lessons";
+import { useAuth } from "@/hooks/useAuth";
+import { Card } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import type { LessonProgress } from "@shared/schema";
+import { CheckCircle, TrendingUp, Flame } from "lucide-react";
 
 export default function Dashboard() {
   const { isAuthenticated, isLoading } = useAuth();
