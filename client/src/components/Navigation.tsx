@@ -36,9 +36,9 @@ export default function Navigation() {
                 <span className="text-xl font-bold text-slate-800">
                   PyOnline
                 </span>
-                <span className="className=inline-block mt-2 px-2 py-0.5 bg-gray-200 text-gray-800 text-xs rounded-full font-semibold uppercase tracking-wider">
+                {/* <span className="className=inline-block mt-2 px-2 py-0.5 bg-gray-200 text-gray-800 text-xs rounded-full font-semibold uppercase tracking-wider">
                   Beta
-                </span>
+                </span> */}
               </div>
             </Link>
             <div className="hidden md:block ml-10">

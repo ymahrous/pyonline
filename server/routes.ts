@@ -1,6 +1,7 @@
 import { setupAuth } from "./auth.js";
 import type { Express } from "express";
 import { storage } from "./storage.js";
+import rateLimit from 'express-rate-limit';
 import { createServer, type Server } from "http";
 import { insertLessonProgressSchema } from "../shared/schema.js";
 
@@ -12,10 +13,16 @@ function isAuthenticated(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
   setupAuth(app);
 
-  // Lesson progress routes
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+  app.use('/api/', limiter);
+
   app.get('/api/progress', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;

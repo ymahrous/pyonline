@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import DOMPurify from 'dompurify';
 import { Button } from "@/components/ui/button";
 import CodeEditor from "@/components/CodeEditor";
 import { Progress } from "@/components/ui/progress";
@@ -180,7 +181,7 @@ export default function LessonDetail() {
         </div>
         
         <div className="prose prose-lg max-w-none mb-8">
-          <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
+          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.content) }} />
         </div>
         
         <div className="mb-8">

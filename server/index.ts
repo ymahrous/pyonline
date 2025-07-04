@@ -1,3 +1,4 @@
+import helmet from 'helmet';
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
 import express, { type Request, Response, NextFunction } from "express";
@@ -5,6 +6,11 @@ import express, { type Request, Response, NextFunction } from "express";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 
 app.use((req, res, next) => {
   const start = Date.now();
