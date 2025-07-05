@@ -13,6 +13,29 @@ export default function Dashboard() {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
 
+  async function deleteAccount() {
+    const confirmed = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch("/api/user", {
+        method: "DELETE",
+        credentials: "include", // send cookies/session
+      });
+
+      if (res.ok) {
+        toast({ title: "Account deleted", description: "We're sad to see you go." });
+        window.location.href = "/"; // or redirect to /auth or homepage
+      } else {
+        const data = await res.json();
+        toast({ title: "Error", description: data.message || "Failed to delete account", variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Unexpected error occurred", variant: "destructive" });
+      console.error("Delete account error:", err);
+    }
+  }
+
   // Show login prompt if not authenticated
   if (!isLoading && !isAuthenticated) {
     return (
@@ -135,6 +158,15 @@ export default function Dashboard() {
             })}
           </div>
         </Card>
+        <div className="mt-8">
+          <Button
+            variant="destructive"
+            onClick={deleteAccount}
+            className="w-full sm:w-auto"
+          >
+            Delete My Account
+          </Button>
+        </div>
       </div>
     </div>
   );

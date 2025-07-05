@@ -15,6 +15,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  deleteUser(id: number): Promise<void>;
   
   // Lesson progress operations
   getLessonProgress(userId: number): Promise<LessonProgress[]>;
@@ -40,6 +41,18 @@ export class DatabaseStorage implements IStorage {
       .values(userData)
       .returning();
     return user;
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    // Optional: delete related lesson progress first, if not handled by foreign key constraints
+    await db
+      .delete(lessonProgress)
+      .where(eq(lessonProgress.userId, id));
+
+    // Then delete the user
+    await db
+      .delete(users)
+      .where(eq(users.id, id));
   }
 
   // Lesson progress operations

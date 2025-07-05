@@ -30,7 +30,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(progress);
     } catch (error) {
       console.error("Error fetching progress:", error);
-      res.status(500).json({ message: "Failed to fetch progress" });
+      res.status(500).json({
+        message: "Internal server error",
+        // details: error instanceof Error ? error.message : String(error),
+      });
     }
   });
 
@@ -46,7 +49,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(progress);
     } catch (error) {
       console.error("Error updating progress:", error);
-      res.status(500).json({ message: "Failed to update progress" });
+      res.status(500).json({
+        message: "Internal server error",
+        // details: error instanceof Error ? error.message : String(error),
+      });
     }
   });
 
@@ -58,7 +64,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(progress || null);
     } catch (error) {
       console.error("Error fetching lesson progress:", error);
-      res.status(500).json({ message: "Failed to fetch lesson progress" });
+      res.status(500).json({
+        message: "Internal server error",
+        // details: error instanceof Error ? error.message : String(error),
+      });
+    }
+  });
+
+  app.delete('/api/user', isAuthenticated, async (req: any, res, next) => {
+    try {
+      const userId = req.user.id;
+
+      await storage.deleteUser(userId);
+      req.logout(() => {
+        res.sendStatus(200);
+      });
+
+      res.json({ message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({
+        message: "Internal server error",
+        // details: error instanceof Error ? error.message : String(error),
+      });
     }
   });
 
